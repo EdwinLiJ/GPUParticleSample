@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!200 &20000000
+ShaderVariantCollection:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: ParticleMetaVariants
+  m_Shaders:
+  - first: {fileID: 4800000, guid: a3fec569f8e9d5e42878448231afaa6b, type: 3}
+    second:
+      variants:
+      - keywords: 
+        passType: 0
+      - keywords: _EXPLOSION_FROM_CENTER
+        passType: 0
+      - keywords: _EXPLOSION_FROM_CENTER _MOVE_AROUND_TARGET_POSITION
+        passType: 0
+      - keywords: _EXPLOSION_FROM_CENTER _MOVE_AROUND_TARGET_POSITION _MOVE_TO_TARGET_POSITION
+        passType: 0
+      - keywords: _EXPLOSION_FROM_CENTER _MOVE_TO_TARGET_POSITION
+        passType: 0
+      - keywords: _FIXED_MOVE_DIRECTION
+        passType: 0
+      - keywords: _MOVE_AROUND_TARGET_POSITION
+        passType: 0
+      - keywords: _MOVE_AROUND_TARGET_POSITION _MOVE_TO_TARGET_POSITION
+        passType: 0

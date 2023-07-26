@@ -5,6 +5,8 @@
  * You can use this sample on any project if you want.
  * 该项目为一个示例工程，目的是展示一种不同的思维方式，用来做效果开发
  * 该工程可以直接或间接的用于任何项目
+ *
+ * https://github.com/EdwinLiJ/GPUParticleSample
  *                      Made By: EdwinLiJ - Github
  *                      知乎:七夜大黑喵 / BiliBili:七夜小黑喵
  ==============================================================*/
@@ -385,6 +387,10 @@ namespace EdwinTools.Rendering {
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+        }
+
+        private void OnGUI() {
+            
         }
 #endif
     }

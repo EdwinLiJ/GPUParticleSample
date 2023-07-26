@@ -437,8 +437,8 @@ MonoBehaviour:
   m_maxSpeed: 78.4
   m_randomDirectionScale: 0
   m_particleMapSizeAndNum: 1048576
-  m_color: {r: 0, g: 0.77502525, b: 5.3403134, a: 1}
-  m_moveType: 1
+  m_color: {r: 1.2980072, g: 0, b: 10.680629, a: 1}
+  m_moveType: 2
   m_emitterPosition: {x: 0, y: 0, z: 0}
   m_emitterCube: {x: 100, y: 10, z: 100}
   m_targetPosition: {x: 0, y: 0, z: 0}
