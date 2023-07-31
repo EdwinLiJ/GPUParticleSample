@@ -43,7 +43,6 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\GPUParticle\ParticleMeshUtils.cs" />
      <Compile Include="Assets\Scripts\GPUParticle\GPUParticle.cs" />
-     <None Include="Assets\StreamingAssets\UnityServicesProjectConfiguration.json" />
      <None Include="Assets\Shaders\ParticleMeta.shader" />
      <None Include="Assets\Shaders\ParticleDisplay.shader" />
      <Reference Include="UnityEngine">

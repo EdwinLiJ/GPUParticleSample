@@ -37,21 +37,14 @@ namespace EdwinTools.Rendering {
 
             public static readonly int TargetPositionID = Shader.PropertyToID("_TargetPosition");
             public static readonly int RotateAngleRangeID = Shader.PropertyToID("_RotateAngleRange");
-            public static readonly int NoiseTexID = Shader.PropertyToID("_NoiseTex");
-            public static readonly int ParticleDurationID = Shader.PropertyToID("_ParticleDuration");
+            public static readonly int StartPosMapID = Shader.PropertyToID("_StartPosMap");
+            public static readonly int StartPosMapYScaleID = Shader.PropertyToID("_StartPosMapYScale");
+            public static readonly int StartPosMapYThresholdID = Shader.PropertyToID("_StartPosMapYThreshold");
+            public static readonly int StartPosMapBlockCountID = Shader.PropertyToID("_StartPosMapBlockCount");
 
-            public static readonly int LineStripHeadColor = Shader.PropertyToID("_LineStripHeadColor");
-            public static readonly int LineStripEndColor = Shader.PropertyToID("_LineStripEndColor");
-            public static readonly int LineStripHeadColorInt = Shader.PropertyToID("_LineStripHeadColorInt");
-            public static readonly int LineStripHeadPosition = Shader.PropertyToID("_LineStripHeadPosition");
-
-
-            public static readonly int DisplayMainTexID = Shader.PropertyToID("_MainTex");
 
             public static readonly int ParticleTexID = Shader.PropertyToID("_ParticleTex");
 
-            // public static readonly int ParticleTex2ID = Shader.PropertyToID("_ParticleTex2");
-            public static readonly int TailID = Shader.PropertyToID("_Tail");
             public static readonly int ColorID = Shader.PropertyToID("_Color");
         }
 
@@ -59,6 +52,8 @@ namespace EdwinTools.Rendering {
         private const string MOVE_TO_TARGET_POSITION = "_MOVE_TO_TARGET_POSITION";
 
         private const string MOVE_AROUND_TARGET_POSITION = "_MOVE_AROUND_TARGET_POSITION";
+
+        private const string ENABLE_START_POS_MAP = "_START_POS_MAP";
         // private const string EXPLOSION_FROM_CENTER = "_EXPLOSION_FROM_CENTER";
         // private const string USE_MESH_LINE = "_USE_MESH_LINE";
         // private const string USE_MESH_LINE_STRIP = "_USE_MESH_LINE_STRIP";
@@ -69,8 +64,9 @@ namespace EdwinTools.Rendering {
             Size16x16_256 = 256,
             Size32x32_1024 = 1024,
             Size64x64_4096 = 4096,
-            Size64x128_8192 = 8192,
             Size128x128_16384 = 16384,
+            Size256x256_65536 = 65536,
+            Size512x512_262144 = 262144,
             Size1024x1024_1048576 = 1048576
         }
 
@@ -108,7 +104,7 @@ namespace EdwinTools.Rendering {
         private float m_randomDirectionScale = 0f;
 
         [SerializeField]
-        private ParticleMapSizeAndNum m_particleMapSizeAndNum = ParticleMapSizeAndNum.Size64x128_8192;
+        private ParticleMapSizeAndNum m_particleMapSizeAndNum = ParticleMapSizeAndNum.Size128x128_16384;
 
         [SerializeField]
         [ColorUsage(false, true)]
@@ -126,6 +122,21 @@ namespace EdwinTools.Rendering {
         /// </summary>
         [SerializeField]
         private Vector3 m_emitterPosition = Vector3.zero;
+
+        [SerializeField]
+        private Texture2D m_startPosMap;
+
+        [Range(0.005f, 0.02f)]
+        [SerializeField]
+        private float m_startPosMapYScale = 0.01f;
+
+        [Range(0, 1f)]
+        [SerializeField]
+        private float m_startPosMapYThreshold = 0.1f;
+
+        [Range(2, 8)]
+        [SerializeField]
+        private int m_startPosMapBlockCount = 4;
 
         /// <summary>
         /// The bounds of emitter start position
@@ -222,6 +233,14 @@ namespace EdwinTools.Rendering {
                 ParticleMoveType.ToTarget);
             SetKeywordByMoveType(m_metaMaterial, MOVE_AROUND_TARGET_POSITION, m_moveType,
                 ParticleMoveType.RotateAround);
+
+            if (m_startPosMap) {
+                m_metaMaterial.EnableKeyword(ENABLE_START_POS_MAP);
+                m_metaMaterial.SetTexture(ShaderIDs.StartPosMapID, m_startPosMap);
+            }
+            else {
+                m_metaMaterial.DisableKeyword(ENABLE_START_POS_MAP);
+            }
         }
 
         private void UpdateMeta(float deltaTime) {
@@ -252,6 +271,12 @@ namespace EdwinTools.Rendering {
             (m_particleMetaAttachmentA, m_particleMetaAttachmentB) =
                 (m_particleMetaAttachmentB, m_particleMetaAttachmentA);
             Graphics.Blit(m_particleMetaAttachmentA, m_particleMetaAttachmentB, m_metaMaterial, 1);
+
+            if (m_startPosMap) {
+                m_metaMaterial.SetFloat(ShaderIDs.StartPosMapYScaleID, m_startPosMapYScale);
+                m_metaMaterial.SetFloat(ShaderIDs.StartPosMapYThresholdID, m_startPosMapYThreshold);
+                m_metaMaterial.SetFloat(ShaderIDs.StartPosMapBlockCountID, m_startPosMapBlockCount);
+            }
         }
 
         private void UpdateDisplay(float deltaTime) {
@@ -283,13 +308,17 @@ namespace EdwinTools.Rendering {
                     width = 64;
                     height = 64;
                     break;
-                case ParticleMapSizeAndNum.Size64x128_8192:
-                    width = 64;
-                    height = 128;
-                    break;
                 case ParticleMapSizeAndNum.Size128x128_16384:
                     width = 128;
                     height = 128;
+                    break;
+                case ParticleMapSizeAndNum.Size256x256_65536:
+                    width = 256;
+                    height = 256;
+                    break;
+                case ParticleMapSizeAndNum.Size512x512_262144:
+                    width = 512;
+                    height = 512;
                     break;
                 case ParticleMapSizeAndNum.Size1024x1024_1048576:
                     width = 1024;
@@ -382,16 +411,14 @@ namespace EdwinTools.Rendering {
                     Gizmos.color = Color.white;
                     Gizmos.DrawSphere(transform.position + m_targetPosition, 2f);
                     break;
-                case ParticleMoveType.RotateAround: 
+                case ParticleMoveType.RotateAround:
                     break;
                 default:
                     throw new ArgumentOutOfRangeException();
             }
         }
 
-        private void OnGUI() {
-            
-        }
+        private void OnGUI() { }
 #endif
     }
 }

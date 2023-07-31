@@ -19,6 +19,8 @@ Shader "Hidden/GPUParticleSystem/ParticleMeta"
     #pragma multi_compile_local _ _EXPLOSION_FROM_CENTER
     // 围绕固定位置旋转
     #pragma multi_compile_local _ _MOVE_AROUND_TARGET_POSITION
+    // 根据特定噪声图生成粒子初始位置
+    #pragma multi_compile_local _ _START_POS_MAP
 
     #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -37,8 +39,15 @@ Shader "Hidden/GPUParticleSystem/ParticleMeta"
     half _Throttle;
     half _LifeTime;
     half _CustomDeltaTime;
-    
     half _RotateAngleRange;
+
+    // default: 0.01
+    half _StartPosMapYScale;
+    // default: 0.1
+    half _StartPosMapYThreshold;
+    // defualt: 4
+    half _StartPosMapBlockCount;
+    
     CBUFFER_END
 
     TEXTURE2D(_MainTex);
@@ -47,6 +56,9 @@ Shader "Hidden/GPUParticleSystem/ParticleMeta"
     // R通道做deltaTime的offset
     TEXTURE2D(_NoiseTex);
     SAMPLER(sampler_NoiseTex);
+
+    TEXTURE2D(_StartPosMap);
+    SAMPLER(sampler_StartPosMap);
 
 
     struct Attributes
@@ -86,14 +98,37 @@ Shader "Hidden/GPUParticleSystem/ParticleMeta"
     {
         float t = _Time.x;
 
-        // 计算出生位置
-        // TODO：
-        // 实际上我们并不是真的需要随机值，考虑到随机值计算其实并不划算，采样一个低分辨率的噪声图相比三次随机值计算可能会更好
-        // Actually we dont really need random numbers always
-        // On mobile devices it's better to sample a low resolution noise texture rather than calculate random numbers
-        float x = GetRandom(uv, t + 1);
-        float y = GetRandom(uv, t + 2);
-        float z = GetRandom(uv, t + 3);
+        #ifdef _START_POS_MAP
+            half dividedStartPosMapBlockCount = 1.0 / _StartPosMapBlockCount;
+            float2 newUV = float2(uv.x % (dividedStartPosMapBlockCount) * _StartPosMapBlockCount, uv.y % dividedStartPosMapBlockCount * _StartPosMapBlockCount);
+            // float2 newUV = uv;
+            half4 mapColor = SAMPLE_TEXTURE2D(_StartPosMap, sampler_StartPosMap, newUV);
+            float index = floor(uv.y * _StartPosMapBlockCount) * _StartPosMapBlockCount + floor(uv.x * _StartPosMapBlockCount);
+            float y = index * _StartPosMapYScale;
+            // Original Code 原始代码
+            // To avoid shader conditional, use 【step】 instead of 【if】
+            // 为了避免可能产生的分支（实际上因为设备的差异可能并不会），使用step替代if
+            // float x = 1e8;
+            // float z = 1e8;
+            // if (mapColor.r > y + _StartPosMapYThreshold)
+            // {
+            //     x = newUV.x;
+            //     z = newUV.y;
+            // }
+            float x = newUV.x + step(mapColor.r, y + _StartPosMapYThreshold) * 1e8;
+            float z = newUV.y + step(mapColor.r, y + _StartPosMapYThreshold) * 1e8;
+        
+        #else
+            // 计算出生位置
+            // TODO：
+            // 实际上我们并不是真的需要随机值，考虑到随机值计算其实并不划算，采样一个低分辨率的噪声图相比三次随机值计算可能会更好
+            // Actually we dont really need random numbers always
+            // On mobile devices it's better to sample a low resolution noise texture rather than calculate random numbers
+            float x = GetRandom(uv, t + 1);
+            float y = GetRandom(uv, t + 2);
+            float z = GetRandom(uv, t + 3);
+        #endif
+        
         
         float3 p = float3(x, y, z);
         p -= 0.5;

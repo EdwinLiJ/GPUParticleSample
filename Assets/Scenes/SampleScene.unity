@@ -436,10 +436,14 @@ MonoBehaviour:
   m_minSpeed: 25
   m_maxSpeed: 78.4
   m_randomDirectionScale: 0
-  m_particleMapSizeAndNum: 1048576
-  m_color: {r: 1.2980072, g: 0, b: 10.680629, a: 1}
+  m_particleMapSizeAndNum: 262144
+  m_color: {r: 4, g: 4, b: 4, a: 1}
   m_moveType: 2
   m_emitterPosition: {x: 0, y: 0, z: 0}
+  m_startPosMap: {fileID: 2800000, guid: 1184c28fc6f0f544a98f68c1ef941fac, type: 3}
+  m_startPosMapYScale: 0.01
+  m_startPosMapYThreshold: 0.1
+  m_startPosMapBlockCount: 4
   m_emitterCube: {x: 100, y: 10, z: 100}
   m_targetPosition: {x: 0, y: 0, z: 0}
   m_emitDirection: {x: 0, y: -1, z: 0}

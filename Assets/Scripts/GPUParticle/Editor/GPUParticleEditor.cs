@@ -28,6 +28,10 @@ namespace EdwinTools.Rendering {
         private SerializedProperty m_targetPosition;
         private SerializedProperty m_emitDirection;
         private SerializedProperty m_rotateAngleRange;
+        private SerializedProperty m_startPosMap;
+        private SerializedProperty m_startPosMapYScale;
+        private SerializedProperty m_startPosMapYThreshold;
+        private SerializedProperty m_startPosMapBlockCount;
         
 
         protected virtual void OnEnable() {
@@ -49,6 +53,10 @@ namespace EdwinTools.Rendering {
             m_particleLifeTime = serializedObject.FindProperty("m_particleLifeTime");
             m_randomSeed = serializedObject.FindProperty("m_randomSeed");
             m_randomDirectionScale = serializedObject.FindProperty("m_randomDirectionScale");
+            m_startPosMap = serializedObject.FindProperty("m_startPosMap");
+            m_startPosMapYScale = serializedObject.FindProperty("m_startPosMapYScale");
+            m_startPosMapYThreshold = serializedObject.FindProperty("m_startPosMapYThreshold");
+            m_startPosMapBlockCount = serializedObject.FindProperty("m_startPosMapBlockCount");
         }
 
         public override void OnInspectorGUI() {
@@ -108,6 +116,13 @@ namespace EdwinTools.Rendering {
             EditorGUILayout.PropertyField(m_throttle, GetLabelContent("粒子数量控制", "Number Throttle"));
             EditorGUILayout.PropertyField(m_particleLifeTime, GetLabelContent("粒子生命周期", "Single Particle LifeTime"));
             EditorGUILayout.PropertyField(m_randomSeed, GetLabelContent("随机种子", "Random Seed"));
+
+            EditorGUILayout.PropertyField(m_startPosMap, GetLabelContent("粒子群初始位置采样图", "Map of Particles start shape"));
+            if (m_startPosMap.objectReferenceValue as Texture2D) {
+                EditorGUILayout.PropertyField(m_startPosMapYScale, GetLabelContent("粒子群Y轴跨度", "Particles Y padding"));
+                EditorGUILayout.PropertyField(m_startPosMapBlockCount, GetLabelContent("粒子群Y轴重叠", "Particles Y repeat count"));
+                EditorGUILayout.PropertyField(m_startPosMapYThreshold, GetLabelContent("采样图显示阈值", "Particles display threshold"));
+            }
         }
 
         private void DrawDirectionalMovingGUI() {
