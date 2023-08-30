@@ -32,6 +32,7 @@ namespace EdwinTools.Rendering {
         private SerializedProperty m_startPosMapYScale;
         private SerializedProperty m_startPosMapYThreshold;
         private SerializedProperty m_startPosMapBlockCount;
+        private SerializedProperty m_loopPlay;
         
 
         protected virtual void OnEnable() {
@@ -57,6 +58,7 @@ namespace EdwinTools.Rendering {
             m_startPosMapYScale = serializedObject.FindProperty("m_startPosMapYScale");
             m_startPosMapYThreshold = serializedObject.FindProperty("m_startPosMapYThreshold");
             m_startPosMapBlockCount = serializedObject.FindProperty("m_startPosMapBlockCount");
+            m_loopPlay = serializedObject.FindProperty("m_loopPlay");
         }
 
         public override void OnInspectorGUI() {
@@ -116,6 +118,7 @@ namespace EdwinTools.Rendering {
             EditorGUILayout.PropertyField(m_throttle, GetLabelContent("粒子数量控制", "Number Throttle"));
             EditorGUILayout.PropertyField(m_particleLifeTime, GetLabelContent("粒子生命周期", "Single Particle LifeTime"));
             EditorGUILayout.PropertyField(m_randomSeed, GetLabelContent("随机种子", "Random Seed"));
+            EditorGUILayout.PropertyField(m_loopPlay, GetLabelContent("循环播放", "Loop Play"));
 
             EditorGUILayout.PropertyField(m_startPosMap, GetLabelContent("粒子群初始位置采样图", "Map of Particles start shape"));
             if (m_startPosMap.objectReferenceValue as Texture2D) {

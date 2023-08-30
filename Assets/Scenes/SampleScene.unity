@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028352, g: 0.22571376, b: 0.3069224, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -436,11 +436,11 @@ MonoBehaviour:
   m_minSpeed: 25
   m_maxSpeed: 78.4
   m_randomDirectionScale: 0
-  m_particleMapSizeAndNum: 262144
-  m_color: {r: 4, g: 4, b: 4, a: 1}
+  m_particleMapSizeAndNum: 4096
+  m_color: {r: 2.1185474, g: 2.1185474, b: 2.1185474, a: 1}
   m_moveType: 2
   m_emitterPosition: {x: 0, y: 0, z: 0}
-  m_startPosMap: {fileID: 2800000, guid: 1184c28fc6f0f544a98f68c1ef941fac, type: 3}
+  m_startPosMap: {fileID: 0}
   m_startPosMapYScale: 0.01
   m_startPosMapYThreshold: 0.1
   m_startPosMapBlockCount: 4
@@ -451,6 +451,7 @@ MonoBehaviour:
   m_throttle: 1
   m_particleLifeTime: 5
   m_randomSeed: 0
+  m_loopPlay: 1
 --- !u!1 &1435788572
 GameObject:
   m_ObjectHideFlags: 0

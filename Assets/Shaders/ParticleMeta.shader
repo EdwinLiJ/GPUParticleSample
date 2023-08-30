@@ -21,6 +21,8 @@ Shader "Hidden/GPUParticleSystem/ParticleMeta"
     #pragma multi_compile_local _ _MOVE_AROUND_TARGET_POSITION
     // 根据特定噪声图生成粒子初始位置
     #pragma multi_compile_local _ _START_POS_MAP
+    
+    #pragma multi_compile_local _ _ENABLE_LOOP_PLAY
 
     #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
     #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl"
@@ -238,7 +240,13 @@ Shader "Hidden/GPUParticleSystem/ParticleMeta"
             p.w -= dt; // life
             return p;
         }
-        return new_particle(i.uv);
+
+        #ifdef _ENABLE_LOOP_PLAY
+            return new_particle(i.uv);
+        #else
+            return half4(99999,99999,99999,-99999);
+        #endif
+        
     }
     ENDHLSL
 

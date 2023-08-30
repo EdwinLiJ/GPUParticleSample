@@ -50,10 +50,10 @@ namespace EdwinTools.Rendering {
 
         private const string FIXED_MOVE_DIRECTION = "_FIXED_MOVE_DIRECTION";
         private const string MOVE_TO_TARGET_POSITION = "_MOVE_TO_TARGET_POSITION";
-
         private const string MOVE_AROUND_TARGET_POSITION = "_MOVE_AROUND_TARGET_POSITION";
-
         private const string ENABLE_START_POS_MAP = "_START_POS_MAP";
+        private const string ENABLE_LOOP_PLAY = "_ENABLE_LOOP_PLAY";
+
         // private const string EXPLOSION_FROM_CENTER = "_EXPLOSION_FROM_CENTER";
         // private const string USE_MESH_LINE = "_USE_MESH_LINE";
         // private const string USE_MESH_LINE_STRIP = "_USE_MESH_LINE_STRIP";
@@ -179,6 +179,9 @@ namespace EdwinTools.Rendering {
         [SerializeField]
         private int m_randomSeed;
 
+        [SerializeField]
+        private bool m_loopPlay = true;
+
         private Mesh m_mesh;
         private RenderTexture m_particleMetaAttachmentA;
         private RenderTexture m_particleMetaAttachmentB;
@@ -188,9 +191,11 @@ namespace EdwinTools.Rendering {
         private bool m_isPlaying;
         private bool m_isPause;
 
-
         private void OnEnable() {
             SetupBuffer(m_particleMapSizeAndNum);
+            UpdateKeywords();
+            UpdateMeta(0);
+
             if (m_playOnEnable) {
                 Play();
             }
@@ -233,6 +238,13 @@ namespace EdwinTools.Rendering {
                 ParticleMoveType.ToTarget);
             SetKeywordByMoveType(m_metaMaterial, MOVE_AROUND_TARGET_POSITION, m_moveType,
                 ParticleMoveType.RotateAround);
+
+            if (m_loopPlay) {
+                m_metaMaterial.EnableKeyword(ENABLE_LOOP_PLAY);
+            }
+            else {
+                m_metaMaterial.DisableKeyword(ENABLE_LOOP_PLAY);
+            }
 
             if (m_startPosMap) {
                 m_metaMaterial.EnableKeyword(ENABLE_START_POS_MAP);
@@ -355,8 +367,9 @@ namespace EdwinTools.Rendering {
                 m_displayMaterial = new Material(Shader.Find(DISPLAY_SHADER_NAME));
                 m_displayMaterial.renderQueue = 3000;
             }
+        }
 
-            // 初始化MetaRT，生成第一次需要的信息图
+        private void SetupRT() {
             Graphics.Blit(null, m_particleMetaAttachmentB, m_metaMaterial, 0);
         }
 
@@ -383,6 +396,11 @@ namespace EdwinTools.Rendering {
         }
 
         public void Play() {
+            if (!m_isPlaying) {
+                // 初始化MetaRT，生成第一次需要的信息图
+                SetupRT();
+            }
+
             m_isPlaying = true;
             m_isPause = false;
         }
@@ -398,6 +416,7 @@ namespace EdwinTools.Rendering {
 
         public void ResetState() {
             SetupBuffer(m_particleMapSizeAndNum);
+            SetupRT();
         }
 
 #if _UNITY_EDITOR
@@ -418,7 +437,8 @@ namespace EdwinTools.Rendering {
             }
         }
 
-        private void OnGUI() { }
+        private void OnGUI() {
+        }
 #endif
     }
 }
