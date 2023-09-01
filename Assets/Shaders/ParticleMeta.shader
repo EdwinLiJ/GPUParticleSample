@@ -151,7 +151,7 @@ Shader "Hidden/GPUParticleSystem/ParticleMeta"
     float3 GetFixedDirectionVelocity(float2 uv)
     {
         float3 velocity = float3(GetRandom(uv, 4), GetRandom(uv, 5), GetRandom(uv, 6));
-        velocity = saturate(velocity - (float3)0.5 * 2);
+        velocity = velocity - (float3)0.5 * 2;
 
         velocity = lerp(_Direction.xyz, velocity, _RandomDirectionScale);
         velocity = normalize(velocity) * lerp(_MinMaxSpeed.x, _MinMaxSpeed.y, GetRandom(uv, 7));
