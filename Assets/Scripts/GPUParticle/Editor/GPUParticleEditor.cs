@@ -102,7 +102,7 @@ namespace EdwinTools.Rendering {
             var englishVersion = GUILayout.Toggle(s_useEnglishVersion, "Language: English");
             if (EditorGUI.EndChangeCheck()) {
                 s_useEnglishVersion = englishVersion;
-                PlayerPrefs.SetInt(LANGUAGE_VERSION_KEY, 1);
+                PlayerPrefs.SetInt(LANGUAGE_VERSION_KEY, englishVersion ? 1 : 0);
             }
             
             
